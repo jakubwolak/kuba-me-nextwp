@@ -1,13 +1,17 @@
 import { getPageBySlug, getAllPages } from "@/lib/wordpress";
 import { Section, Container, Prose } from "@/components/craft";
 import { siteConfig } from "@/site.config";
-
 import type { Metadata } from "next";
 
-// Revalidate pages every hour
+export interface PageProps {
+  params: {
+    slug: string;
+  };
+}
+
 export const revalidate = 3600;
 
-export async function generateStaticParams() {
+export async function generateStaticParams(): Promise<PageProps["params"][]> {
   const pages = await getAllPages();
 
   return pages.map((page: any) => ({
@@ -15,11 +19,7 @@ export async function generateStaticParams() {
   }));
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: { slug: string };
-}): Promise<Metadata> {
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const page = await getPageBySlug(params.slug);
 
   if (!page) return {};
@@ -57,11 +57,7 @@ export async function generateMetadata({
   };
 }
 
-export default async function Page({
-  params,
-}: {
-  params: { slug: string };
-}) {
+const Page = async ({ params }: PageProps) => {
   const page = await getPageBySlug(params.slug);
 
   return (
@@ -74,4 +70,6 @@ export default async function Page({
       </Container>
     </Section>
   );
-}
+};
+
+export default Page;

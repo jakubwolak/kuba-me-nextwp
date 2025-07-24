@@ -12,6 +12,7 @@ async function getPageBySlug(slug: string): Promise<Page | null> {
 }
 
 export default async function Page({ params }: { params: { slug: string } }) {
+
   const page = await getPageBySlug(params.slug);
 
   if (!page) return <div>Strona nie znaleziona</div>;
