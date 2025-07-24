@@ -10,7 +10,7 @@ export const revalidate = 3600;
 export async function generateStaticParams() {
   const pages = await getAllPages();
 
-  return pages.map((page) => ({
+  return pages.map((page: any) => ({
     slug: page.slug,
   }));
 }
@@ -20,22 +20,16 @@ export async function generateMetadata({
 }: {
   params: { slug: string };
 }): Promise<Metadata> {
-  const { slug } = params;
-  const page = await getPageBySlug(slug);
+  const page = await getPageBySlug(params.slug);
 
-  if (!page) {
-    return {};
-  }
-
-  const ogUrl = new URL(`${siteConfig.site_domain}/api/og`);
-  ogUrl.searchParams.append("title", page.title.rendered);
+  if (!page) return {};
 
   const description = page.excerpt?.rendered
     ? page.excerpt.rendered.replace(/<[^>]*>/g, "").trim()
-    : page.content.rendered
-        .replace(/<[^>]*>/g, "")
-        .trim()
-        .slice(0, 200) + "...";
+    : page.content.rendered.replace(/<[^>]*>/g, "").trim().slice(0, 200) + "...";
+
+  const ogUrl = new URL(`${siteConfig.site_domain}/api/og`);
+  ogUrl.searchParams.append("title", page.title.rendered);
   ogUrl.searchParams.append("description", description);
 
   return {
@@ -44,8 +38,7 @@ export async function generateMetadata({
     openGraph: {
       title: page.title.rendered,
       description,
-      type: "article",
-      url: `${siteConfig.site_domain}/pages/${page.slug}`,
+      url: `${siteConfig.site_domain}/${page.slug}`,
       images: [
         {
           url: ogUrl.toString(),
@@ -69,14 +62,13 @@ export default async function Page({
 }: {
   params: { slug: string };
 }) {
-  const { slug } = params;
-  const page = await getPageBySlug(slug);
+  const page = await getPageBySlug(params.slug);
 
   return (
     <Section>
       <Container>
         <Prose>
-          <h2>{page.title.rendered}</h2>
+          <h1>{page.title.rendered}</h1>
           <div dangerouslySetInnerHTML={{ __html: page.content.rendered }} />
         </Prose>
       </Container>
