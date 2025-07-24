@@ -1,6 +1,4 @@
 import "./globals.css";
-
-import { Section, Container } from "@/components/craft";
 import { Inter as FontSans } from "next/font/google";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
@@ -8,15 +6,15 @@ import { MobileNav } from "@/components/nav/mobile-nav";
 import { Analytics } from "@vercel/analytics/react";
 import { Button } from "@/components/ui/button";
 
-import { mainMenu, contentMenu } from "@/menu.config";
+import { contentMenu } from "@/menu.config";
 import { siteConfig } from "@/site.config";
 import { cn } from "@/lib/utils";
 
-import Balancer from "react-wrap-balancer";
+import { Section, Container } from "@/components/craft";
 import Logo from "@/public/logo.svg";
 import Image from "next/image";
 import Link from "next/link";
-
+import Balancer from "react-wrap-balancer";
 import type { Metadata } from "next";
 
 const font = FontSans({
@@ -26,40 +24,28 @@ const font = FontSans({
 
 export const metadata: Metadata = {
   title: "WordPress & Next.js Starter by 9d8",
-  description:
-    "A starter template for Next.js with WordPress as a headless CMS.",
+  description: "A starter template for Next.js with WordPress as a headless CMS.",
   metadataBase: new URL(siteConfig.site_domain),
   alternates: {
     canonical: "/",
   },
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <head />
-      <body className={cn("min-h-screen font-sans antialiased", font.variable)}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
+    <html lang="pl" suppressHydrationWarning>
+      <body className={font.className}>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <Nav />
           {children}
           <Footer />
         </ThemeProvider>
-        <Analytics />
       </body>
     </html>
   );
 }
 
-const Nav = ({ className, children, id }: NavProps) => {
+const Nav = ({ className, children, id }: any) => {
   return (
     <nav
       className={cn("sticky z-50 top-0 bg-background", "border-b", className)}
@@ -80,20 +66,27 @@ const Nav = ({ className, children, id }: NavProps) => {
             className="dark:invert"
             width={42}
             height={26.44}
-          ></Image>
+          />
           <h2 className="text-sm">{siteConfig.site_name}</h2>
         </Link>
-        {children}
+
+        {/* 👉 Statyczne menu */}
+        <div className="mx-2 hidden md:flex gap-2">
+          <Button asChild variant="ghost" size="sm">
+            <Link href="/o-mnie">O mnie</Link>
+          </Button>
+          <Button asChild variant="ghost" size="sm">
+            <Link href="/biznes">Biznes</Link>
+          </Button>
+          <Button asChild variant="ghost" size="sm">
+            <Link href="/posts">Blog</Link>
+          </Button>
+          <Button asChild variant="ghost" size="sm">
+            <Link href="/kontakt">Kontakt</Link>
+          </Button>
+        </div>
+
         <div className="flex items-center gap-2">
-          <div className="mx-2 hidden md:flex">
-            {Object.entries(mainMenu).map(([key, href]) => (
-              <Button key={href} asChild variant="ghost" size="sm">
-                <Link href={href}>
-                  {key.charAt(0).toUpperCase() + key.slice(1)}
-                </Link>
-              </Button>
-            ))}
-          </div>
           <Button asChild className="hidden sm:flex">
             <Link href="https://github.com/9d8dev/next-wp">Get Started</Link>
           </Button>
@@ -118,7 +111,7 @@ const Footer = () => {
                 className="dark:invert"
                 width={42}
                 height={26.44}
-              ></Image>
+              />
             </Link>
             <p>
               <Balancer>{siteConfig.site_description}</Balancer>
@@ -126,15 +119,10 @@ const Footer = () => {
           </div>
           <div className="flex flex-col gap-2 text-sm">
             <h5 className="font-medium text-base">Website</h5>
-            {Object.entries(mainMenu).map(([key, href]) => (
-              <Link
-                className="hover:underline underline-offset-4"
-                key={href}
-                href={href}
-              >
-                {key.charAt(0).toUpperCase() + key.slice(1)}
-              </Link>
-            ))}
+            <Link className="hover:underline underline-offset-4" href="/o-mnie">O mnie</Link>
+            <Link className="hover:underline underline-offset-4" href="/biznes">Biznes</Link>
+            <Link className="hover:underline underline-offset-4" href="/posts">Blog</Link>
+            <Link className="hover:underline underline-offset-4" href="/kontakt">Kontakt</Link>
           </div>
           <div className="flex flex-col gap-2 text-sm">
             <h5 className="font-medium text-base">Blog</h5>
@@ -152,8 +140,7 @@ const Footer = () => {
         <Container className="border-t not-prose flex flex-col md:flex-row md:gap-2 gap-6 justify-between md:items-center">
           <ThemeToggle />
           <p className="text-muted-foreground">
-            &copy; <a href="https://9d8.dev">9d8</a>. All rights reserved.
-            2025-present.
+            &copy; <a href="https://9d8.dev">9d8</a>. All rights reserved. 2025-present.
           </p>
         </Container>
       </Section>
