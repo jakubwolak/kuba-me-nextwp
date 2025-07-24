@@ -18,9 +18,9 @@ export async function generateStaticParams() {
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: { slug: string };
 }): Promise<Metadata> {
-  const { slug } = await params;
+  const { slug } = params;
   const page = await getPageBySlug(slug);
 
   if (!page) {
@@ -29,7 +29,7 @@ export async function generateMetadata({
 
   const ogUrl = new URL(`${siteConfig.site_domain}/api/og`);
   ogUrl.searchParams.append("title", page.title.rendered);
-  // Strip HTML tags for description and limit length
+
   const description = page.excerpt?.rendered
     ? page.excerpt.rendered.replace(/<[^>]*>/g, "").trim()
     : page.content.rendered
@@ -40,10 +40,10 @@ export async function generateMetadata({
 
   return {
     title: page.title.rendered,
-    description: description,
+    description,
     openGraph: {
       title: page.title.rendered,
-      description: description,
+      description,
       type: "article",
       url: `${siteConfig.site_domain}/pages/${page.slug}`,
       images: [
@@ -58,7 +58,7 @@ export async function generateMetadata({
     twitter: {
       card: "summary_large_image",
       title: page.title.rendered,
-      description: description,
+      description,
       images: [ogUrl.toString()],
     },
   };
@@ -67,9 +67,9 @@ export async function generateMetadata({
 export default async function Page({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: { slug: string };
 }) {
-  const { slug } = await params;
+  const { slug } = params;
   const page = await getPageBySlug(slug);
 
   return (
